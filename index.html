@@ -6,7 +6,7 @@
   <title>Fragmentos</title>
   <style>
     :root{
-      --bg:#0b1020;--card:#020617;--txt:#e5e7eb;--muted:#9ca3af;--accent:#60a5fa;--ok:#34d399;
+      --bg:#0b1020;--card:#020617;--txt:#e5e7eb;--muted:#9ca3af;--accent:#60a5fa;--ok:#34d399;--err:#ef4444;
     }
     *{box-sizing:border-box}
     body{
@@ -15,24 +15,23 @@
       color:var(--txt);font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
     .wrap{width:min(900px,92vw)}
-    .card{background:linear-gradient(180deg,#020617,#020617 70%);border:1px solid #111827;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+    .card{background:#020617;border:1px solid #111827;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
     header{padding:18px 20px;border-bottom:1px dashed #111827;display:flex;gap:12px;align-items:center}
     .dot{width:10px;height:10px;border-radius:50%;background:#ef4444;box-shadow:18px 0 #f59e0b,36px 0 #22c55e}
     header h1{font-size:14px;margin:0;color:var(--muted)}
     .body{padding:18px 20px}
-    .terminal{background:#020617;border-radius:10px;padding:16px;min-height:260px}
-    .line{opacity:0;transform:translateY(6px);transition:all .35s ease}
-    .line.show{opacity:1;transform:none}
-    .prompt{color:var(--accent)}
+    .terminal{background:#020617;border-radius:10px;padding:16px;min-height:280px}
+    .line{margin-bottom:8px}
     .ok{color:var(--ok)}
+    .err{color:var(--err)}
     .muted{color:var(--muted)}
     .controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+    input{flex:1;min-width:220px;background:#020617;border:1px solid #1f2937;color:var(--txt);padding:10px 12px;border-radius:10px}
     button{appearance:none;border:1px solid #1f2937;background:#020617;color:var(--txt);padding:10px 14px;border-radius:10px;cursor:pointer}
-    button.primary{border-color:#2563eb;background:#020617}
+    button.primary{border-color:#2563eb}
     button:disabled{opacity:.5;cursor:not-allowed}
     footer{padding:14px 20px;border-top:1px dashed #111827;color:var(--muted);font-size:12px}
     .letter{white-space:pre-wrap;line-height:1.7}
-    .hidden{display:none}
   </style>
 </head>
 <body>
@@ -40,101 +39,70 @@
     <div class="card">
       <header>
         <div class="dot"></div>
-        <h1>fragmentos.js — ejecución incremental</h1>
+        <h1>fragmentos.js — ejecución validada</h1>
       </header>
       <div class="body">
         <div class="terminal" id="terminal"></div>
         <div class="controls">
-          <button id="next" class="primary">ejecutar siguiente línea ▶</button>
-          <button id="reveal" disabled>compilar mensaje final ❤</button>
+          <input id="codeInput" placeholder="escribe la línea exacta aquí" autocomplete="off" />
+          <button id="check" class="primary">ejecutar</button>
         </div>
       </div>
       <footer>
-        <span class="muted">Pista:</span> cada papelito es una línea. El orden importa.
+        Cada papelito contiene una pista. Si el código coincide, avanzas.
       </footer>
     </div>
   </div>
 
   <script>
-    // === CONFIGURA AQUÍ ===
-    // Añade o quita líneas: entre más, mejor para el frasco 🧪
-    const LINES = [
+    // === FRAGMENTOS CORRECTOS (orden exacto) ===
+    const FRAGMENTS = [
       "// inicializando entorno emocional…",
       "const nosotros = { version: '1.0.0', estable: true };",
-      "import { paciencia, risas } from 'dias-compartidos';",
-      "let latidos = 0;",
-      "for (let i = 0; i < recuerdos.length; i++) latidos++;",
-      "// nota: los bugs también nos enseñaron",
+      "let confianza = 0;",
       "if (dudas) confianza++;",
       "while (tiempo) aprendimos();",
-      "const cafe = true; // combustible principal",
-      "const musica = ['silencios','canciones','carcajadas'];",
-      "function crecer(juntos){ return juntos + 1; }",
-      "// optimizando…",
       "try { amar(); } catch(e) { amarMas(); }",
-      "const planes = new Set();",
-      "planes.add('mañanas'); planes.add('tardes'); planes.add('noches');",
-      "// sincronizando commits",
-      "git commit -m 'elegirte de nuevo'",
-      "git push origin futuro",
-      "// casi listo",
-      "export default nosotros;"
+      "git commit -m \"elegirte de nuevo\"",
+      "git push origin futuro"
     ];
 
-    const LETTER = `Mi amor,
-
-Si llegaste hasta aquí, ya sabes lo que esto significa.
-Cada línea fue un fragmento real de lo que somos: pruebas, errores,
-iteraciones y pequeños avances que solo funcionan cuando estamos juntos.
-
-No prometo un código perfecto, pero sí uno honesto.
-Uno que se mantiene, se refactoriza y vuelve a intentar.
-
-Gracias por leerme con paciencia,
-por quedarte cuando el build falla,
-y por elegirnos incluso sin documentación.
-
-Con todo mi corazón,
-— Yo`;
-    // =====================
+    const LETTER = `Mi amor,\n\nSi llegaste hasta aquí, no fue por suerte.\nFue porque resolviste cada fragmento con paciencia,\ncomo hacemos con nosotros.\n\nNada de esto es perfecto,\npero es real. Se construye, se rompe,\nse vuelve a intentar y aun así decide quedarse.\n\nGracias por ejecutar este código conmigo,\nincluso cuando no había manual.\n\nCon todo mi corazón,\n— Yo`;
+    // ==========================================
 
     const term = document.getElementById('terminal');
-    const nextBtn = document.getElementById('next');
-    const revealBtn = document.getElementById('reveal');
+    const input = document.getElementById('codeInput');
+    const btn = document.getElementById('check');
     let idx = 0;
 
-    function addLine(text, cls=''){
+    function log(text, cls=''){
       const div = document.createElement('div');
       div.className = `line ${cls}`;
-      div.innerHTML = `<span class="prompt">$</span> ${text}`;
+      div.textContent = text;
       term.appendChild(div);
-      requestAnimationFrame(()=>div.classList.add('show'));
       term.scrollTop = term.scrollHeight;
     }
 
-    nextBtn.addEventListener('click',()=>{
-      if(idx < LINES.length){
-        addLine(LINES[idx]);
+    log("// escribe la primera línea para comenzar", 'muted');
+
+    btn.addEventListener('click',()=>{
+      if(idx >= FRAGMENTS.length) return;
+
+      if(input.value.trim() === FRAGMENTS[idx]){
+        log("✔ " + FRAGMENTS[idx], 'ok');
         idx++;
-        if(idx === LINES.length){
-          nextBtn.disabled = true;
-          revealBtn.disabled = false;
-          addLine('✔ compilación exitosa','ok');
+        input.value = '';
+
+        if(idx === FRAGMENTS.length){
+          log("\n✔ compilación exitosa", 'ok');
+          log("\n" + LETTER);
+          input.disabled = true;
+          btn.disabled = true;
         }
+      } else {
+        log("✖ Error de sintaxis. Revisa el fragmento.", 'err');
       }
     });
-
-    revealBtn.addEventListener('click',()=>{
-      term.innerHTML = '';
-      const box = document.createElement('div');
-      box.className = 'line show letter';
-      box.textContent = LETTER;
-      term.appendChild(box);
-    });
-
-    // arranque
-    addLine('// listo. ejecuta línea por línea.','muted');
   </script>
 </body>
 </html>
-
