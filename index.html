@@ -1,10 +1,140 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Prueba</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fragmentos</title>
+  <style>
+    :root{
+      --bg:#0b1020;--card:#020617;--txt:#e5e7eb;--muted:#9ca3af;--accent:#60a5fa;--ok:#34d399;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:grid;place-items:center;
+      background:radial-gradient(1200px 600px at 10% 10%, #0f172a 0%, var(--bg) 40%);
+      color:var(--txt);font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .wrap{width:min(900px,92vw)}
+    .card{background:linear-gradient(180deg,#020617,#020617 70%);border:1px solid #111827;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+    header{padding:18px 20px;border-bottom:1px dashed #111827;display:flex;gap:12px;align-items:center}
+    .dot{width:10px;height:10px;border-radius:50%;background:#ef4444;box-shadow:18px 0 #f59e0b,36px 0 #22c55e}
+    header h1{font-size:14px;margin:0;color:var(--muted)}
+    .body{padding:18px 20px}
+    .terminal{background:#020617;border-radius:10px;padding:16px;min-height:260px}
+    .line{opacity:0;transform:translateY(6px);transition:all .35s ease}
+    .line.show{opacity:1;transform:none}
+    .prompt{color:var(--accent)}
+    .ok{color:var(--ok)}
+    .muted{color:var(--muted)}
+    .controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+    button{appearance:none;border:1px solid #1f2937;background:#020617;color:var(--txt);padding:10px 14px;border-radius:10px;cursor:pointer}
+    button.primary{border-color:#2563eb;background:#020617}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    footer{padding:14px 20px;border-top:1px dashed #111827;color:var(--muted);font-size:12px}
+    .letter{white-space:pre-wrap;line-height:1.7}
+    .hidden{display:none}
+  </style>
 </head>
 <body>
-  <h1>GitHub Pages funciona 💙</h1>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <div class="dot"></div>
+        <h1>fragmentos.js — ejecución incremental</h1>
+      </header>
+      <div class="body">
+        <div class="terminal" id="terminal"></div>
+        <div class="controls">
+          <button id="next" class="primary">ejecutar siguiente línea ▶</button>
+          <button id="reveal" disabled>compilar mensaje final ❤</button>
+        </div>
+      </div>
+      <footer>
+        <span class="muted">Pista:</span> cada papelito es una línea. El orden importa.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // === CONFIGURA AQUÍ ===
+    // Añade o quita líneas: entre más, mejor para el frasco 🧪
+    const LINES = [
+      "// inicializando entorno emocional…",
+      "const nosotros = { version: '1.0.0', estable: true };",
+      "import { paciencia, risas } from 'dias-compartidos';",
+      "let latidos = 0;",
+      "for (let i = 0; i < recuerdos.length; i++) latidos++;",
+      "// nota: los bugs también nos enseñaron",
+      "if (dudas) confianza++;",
+      "while (tiempo) aprendimos();",
+      "const cafe = true; // combustible principal",
+      "const musica = ['silencios','canciones','carcajadas'];",
+      "function crecer(juntos){ return juntos + 1; }",
+      "// optimizando…",
+      "try { amar(); } catch(e) { amarMas(); }",
+      "const planes = new Set();",
+      "planes.add('mañanas'); planes.add('tardes'); planes.add('noches');",
+      "// sincronizando commits",
+      "git commit -m 'elegirte de nuevo'",
+      "git push origin futuro",
+      "// casi listo",
+      "export default nosotros;"
+    ];
+
+    const LETTER = `Mi amor,
+
+Si llegaste hasta aquí, ya sabes lo que esto significa.
+Cada línea fue un fragmento real de lo que somos: pruebas, errores,
+iteraciones y pequeños avances que solo funcionan cuando estamos juntos.
+
+No prometo un código perfecto, pero sí uno honesto.
+Uno que se mantiene, se refactoriza y vuelve a intentar.
+
+Gracias por leerme con paciencia,
+por quedarte cuando el build falla,
+y por elegirnos incluso sin documentación.
+
+Con todo mi corazón,
+— Yo`;
+    // =====================
+
+    const term = document.getElementById('terminal');
+    const nextBtn = document.getElementById('next');
+    const revealBtn = document.getElementById('reveal');
+    let idx = 0;
+
+    function addLine(text, cls=''){
+      const div = document.createElement('div');
+      div.className = `line ${cls}`;
+      div.innerHTML = `<span class="prompt">$</span> ${text}`;
+      term.appendChild(div);
+      requestAnimationFrame(()=>div.classList.add('show'));
+      term.scrollTop = term.scrollHeight;
+    }
+
+    nextBtn.addEventListener('click',()=>{
+      if(idx < LINES.length){
+        addLine(LINES[idx]);
+        idx++;
+        if(idx === LINES.length){
+          nextBtn.disabled = true;
+          revealBtn.disabled = false;
+          addLine('✔ compilación exitosa','ok');
+        }
+      }
+    });
+
+    revealBtn.addEventListener('click',()=>{
+      term.innerHTML = '';
+      const box = document.createElement('div');
+      box.className = 'line show letter';
+      box.textContent = LETTER;
+      term.appendChild(box);
+    });
+
+    // arranque
+    addLine('// listo. ejecuta línea por línea.','muted');
+  </script>
 </body>
 </html>
+
