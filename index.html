@@ -232,7 +232,11 @@
 
         if (idx === FRAGMENTS.length) {
           log("\n✔ compilación exitosa", 'ok');
-          log("\n" + LETTER);
+          const letterDiv = document.createElement('div');
+          letterDiv.className = 'line letter';
+          letterDiv.textContent = LETTER;
+          term.appendChild(letterDiv);
+          term.scrollTop = term.scrollHeight;
           input.disabled = true;
           btn.disabled = true;
         }
