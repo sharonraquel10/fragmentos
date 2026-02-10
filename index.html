@@ -185,14 +185,15 @@ Con mucho amor y cariño, tuya siempre...\n\n
     log("// escribe la primera línea para comenzar", 'muted');
 
     btn.addEventListener('click', () => {
+	  if (music.paused) {
+        music.volume = 0.4;
+        music.play().catch(() => {});;
+      }
       if (idx >= FRAGMENTS.length) return;
 
       if (input.value.trim() === FRAGMENTS[idx]) {
 
-        if (music && music.paused) {
-          music.volume = 0.4;
-          music.play();
-        }
+        
 
         log("✔ " + FRAGMENTS[idx], 'ok');
         idx++;
