@@ -4,58 +4,148 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fragmentos</title>
+
   <style>
     :root{
-      --bg:#0b1020;--card:#020617;--txt:#e5e7eb;--muted:#9ca3af;--accent:#60a5fa;--ok:#34d399;--err:#ef4444;
+      --bg:#0b1020;
+      --card:#020617;
+      --txt:#e5e7eb;
+      --muted:#9ca3af;
+      --accent:#60a5fa;
+      --ok:#34d399;
+      --err:#ef4444;
     }
-    *{box-sizing:border-box}
+
+    *{ box-sizing:border-box }
+
     body{
-      margin:0;min-height:100vh;display:grid;place-items:center;
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
       background:radial-gradient(1200px 600px at 10% 10%, #0f172a 0%, var(--bg) 40%);
-      color:var(--txt);font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color:var(--txt);
+      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
-    .wrap{width:min(900px,92vw)}
-    .card{background:#020617;border:1px solid #111827;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
-    header{padding:18px 20px;border-bottom:1px dashed #111827;display:flex;gap:12px;align-items:center}
-    .dot{width:10px;height:10px;border-radius:50%;background:#ef4444;box-shadow:18px 0 #f59e0b,36px 0 #22c55e}
-    header h1{font-size:14px;margin:0;color:var(--muted)}
-    .body{padding:18px 20px}
-    .terminal{background:#020617;border-radius:10px;padding:16px;min-height:280px}
-    .line{margin-bottom:8px}
-    .ok{color:var(--ok)}
-    .err{color:var(--err)}
-    .muted{color:var(--muted)}
-    .controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-    input{flex:1;min-width:220px;background:#020617;border:1px solid #1f2937;color:var(--txt);padding:10px 12px;border-radius:10px}
-    button{appearance:none;border:1px solid #1f2937;background:#020617;color:var(--txt);padding:10px 14px;border-radius:10px;cursor:pointer}
-    button.primary{border-color:#2563eb}
-    button:disabled{opacity:.5;cursor:not-allowed}
-    footer{padding:14px 20px;border-top:1px dashed #111827;color:var(--muted);font-size:12px}
-    .letter{white-space:pre-wrap;line-height:1.7}
+
+    .wrap{ width:min(900px,92vw) }
+
+    .card{
+      background:var(--card);
+      border:1px solid #111827;
+      border-radius:14px;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
+    }
+
+    header{
+      padding:18px 20px;
+      border-bottom:1px dashed #111827;
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#ef4444;
+      box-shadow:18px 0 #f59e0b,36px 0 #22c55e;
+    }
+
+    header h1{
+      font-size:14px;
+      margin:0;
+      color:var(--muted);
+    }
+
+    .body{ padding:18px 20px }
+
+    .terminal{
+      background:#020617;
+      border-radius:10px;
+      padding:16px;
+      min-height:280px;
+    }
+
+    .line{ margin-bottom:8px }
+    .ok{ color:var(--ok) }
+    .err{ color:var(--err) }
+    .muted{ color:var(--muted) }
+
+    .controls{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    input{
+      flex:1;
+      min-width:220px;
+      background:#020617;
+      border:1px solid #1f2937;
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius:10px;
+    }
+
+    button{
+      appearance:none;
+      border:1px solid #1f2937;
+      background:#020617;
+      color:var(--txt);
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    button.primary{ border-color:#2563eb }
+    button:disabled{ opacity:.5; cursor:not-allowed }
+
+    footer{
+      padding:14px 20px;
+      border-top:1px dashed #111827;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .letter{
+      white-space:pre-wrap;
+      line-height:1.7;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="card">
       <header>
         <div class="dot"></div>
-        <h1>..........Contigo todo, sin tí nada💌.js — ejecución validada</h1>
+        <h1>..........Contigo todo, sin ti nada💌.js — ejecución validada</h1>
       </header>
+
       <div class="body">
         <div class="terminal" id="terminal"></div>
+
         <div class="controls">
           <input id="codeInput" placeholder="escribe la línea exacta aquí" autocomplete="off" />
           <button id="check" class="primary">ejecutar</button>
         </div>
       </div>
+
       <footer>
-        Mi Amor, cada papelito es un fragmento(línea de código). Si el código coincide, avanzas.
+        Mi amor, cada papelito es un fragmento (línea de código).  
+        Si el código coincide, avanzas.
       </footer>
     </div>
   </div>
 
+  <audio id="bgMusic" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
-    // === FRAGMENTOS CORRECTOS (orden exacto) ===
     const FRAGMENTS = [
       "// inicializando entorno emocional...",
       "const nosotros = { version: '1.0.0', estable: true };",
@@ -67,7 +157,8 @@
       "git push origin futuro"
     ];
 
-    const LETTER = `📜\nHola David, antes de todo quiero que sepas que este regalo es una de mis muestras de amor más preciadas, acabas de entrar en lo más recóndito de mi corazón, cada palabra que leerás fue escrita desde lo más profundo de mis sentimientos, de mi amor por ti, quería que fuera especial y que solo tú y yo lo entendiéramos al estilos dev que conocemos, aprendí como crear repositorios en GitHub para hacerte este regalo, sé que tú querías enseñarme todo eso, pero no me pude aguantar hacerte algo único que te dejara resolviendo un puzzle como tanto te gusta, intenté unir las cosas que te gustan (las que sé por el momento) y espero te hayas (no "haigas") divertido en el proceso...con mucho amor quiero decirte que...
+    const LETTER = `📜
+Hola David, antes de todo quiero que sepas que este regalo es una de mis muestras de amor más preciadas, acabas de entrar en lo más recóndito de mi corazón, cada palabra que leerás fue escrita desde lo más profundo de mis sentimientos, de mi amor por ti, quería que fuera especial y que solo tú y yo lo entendiéramos al estilos dev que conocemos, aprendí como crear repositorios en GitHub para hacerte este regalo, sé que tú querías enseñarme todo eso, pero no me pude aguantar hacerte algo único que te dejara resolviendo un puzzle como tanto te gusta, intenté unir las cosas que te gustan (las que sé por el momento) y espero te hayas (no "haigas") divertido en el proceso...con mucho amor quiero decirte que...
 \n\nTú, David Alexis Tulloch Arosemena, has, eres y serás mi gran amor, porque contigo yo pude ver que amar va más allá de lo que una persona pueda ofrecerte, sino también de lo que estamos dispuestos a sacrificar por tenernos.\n\nCada momento a tu lado es como vivir una novela romántica de los años 70, algo que siempre soñé tener y que creí jamás encontraría, te has vuelto uno con mis pensamientos y me vuelvo loca de tanto amor y deseo, se desborda que me hace pensar que es un sueño vívido.\nNo sé que nos depare la vida, solo sé que mi presente a tu lado es lo que importa.\n\n
 Me aceptaste con todo y mis miedos, traumas, me escuchaste cuando más necesitaba ser escuchada sin interrupciones, por fin pude ser la que escucha consejos y no solo darlos, por fin pude mostrar mi lado más femenino sin miedo a ser burlada, porque tú David...sacaste mi niña interior y por fin me siento sanada gracias a tu amor, cariño, delicadeza. Ahora entiendo que esos amores que te dejan sin aire no solo existen en las películas y series, es posible tenerlos en la realidad, solo que no todos lo consiguen. Es una bendición que entre tantos nos encontráramos y no pienso soltarte hasta mi muerte, quiero mi vida a tu lado, formar una familia a tu lado, tener bebés contigo y también gatitos, quien sabe si un perrito o un ranchito lejos de la ciudad... quiero tantas cosas, pero contigo. No quiero vivir de la ilusión, sé que nada es fácil de conseguir, pero si le echamos ganas, sudor y sangre, podemos alcanzar nuestras metas.
 No me sueltes, tengamos nuestra familia y seamos felices sin importarnos el qué dirán, enamorémonos cada día más y si un día caemos, nos levantamos mutuamente, esa es la clave del matrimonio.\n\n
@@ -75,14 +166,15 @@ Podría quedarme aquí diciéndote todas las palabras hermosas habidas y por hab
 
 Con mucho amor y cariño, tuya siempre...\n\n
 										Tu Raquel🌹.`;
-    // ==========================================
 
     const term = document.getElementById('terminal');
     const input = document.getElementById('codeInput');
     const btn = document.getElementById('check');
+    const music = document.getElementById('bgMusic');
+
     let idx = 0;
 
-    function log(text, cls=''){
+    function log(text, cls = ''){
       const div = document.createElement('div');
       div.className = `line ${cls}`;
       div.textContent = text;
@@ -92,20 +184,27 @@ Con mucho amor y cariño, tuya siempre...\n\n
 
     log("// escribe la primera línea para comenzar", 'muted');
 
-    btn.addEventListener('click',()=>{
-      if(idx >= FRAGMENTS.length) return;
+    btn.addEventListener('click', () => {
+      if (idx >= FRAGMENTS.length) return;
 
-      if(input.value.trim() === FRAGMENTS[idx]){
+      if (input.value.trim() === FRAGMENTS[idx]) {
+
+        if (music && music.paused) {
+          music.volume = 0.4;
+          music.play();
+        }
+
         log("✔ " + FRAGMENTS[idx], 'ok');
         idx++;
         input.value = '';
 
-        if(idx === FRAGMENTS.length){
+        if (idx === FRAGMENTS.length) {
           log("\n✔ compilación exitosa", 'ok');
           log("\n" + LETTER);
           input.disabled = true;
           btn.disabled = true;
         }
+
       } else {
         log("✖ Error de sintaxis. Revisa el fragmento.", 'err');
       }
